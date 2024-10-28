@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &numProces);
 
-    // Imprimir que el proceso está trabajando
+    // Imprime que el proceso está trabajando
     printf("Proceso %d de %d está trabajando...\n", rank, numProces);
 
     int local_n = n / numProces;
@@ -35,13 +35,13 @@ int main(int argc, char** argv) {
         printf("\n");
     }
 
-    // Distribuir datos a todos los procesos
+    // Distribuye datos a todos los procesos
     MPI_Scatter(data, local_n, MPI_INT, local_data, local_n, MPI_INT, 0, MPI_COMM_WORLD);
     
-    // Informar cuántos datos se pasaron a cada proceso
+    // Informa cuántos datos se pasaron a cada proceso
     printf("Proceso %d recibió %d datos:\n", rank, local_n);
     
-    // Imprimir los datos que maneja cada proceso
+    // Imprime los datos que maneja cada proceso
     /*printf("Proceso %d maneja los datos:\n", rank);
     for (int i = 0; i < local_n; i++)
     {
@@ -49,18 +49,18 @@ int main(int argc, char** argv) {
     }
     printf("\n");*/
 
-    // Calcular el histograma local
+    // Calcula el histograma local
     histogramaLOcal(local_data, local_n, histogram, valorMaximo);
     printf("Proceso %d calculó el histograma local:\n", rank);
     for (int i = 0; i < valorMaximo; i++) {
         printf("Bin %d: %d\n", i, histogram[i]);
     }
 
-    // Reducir el histograma global
+    // Histograma global
     if (rank == 0) global_histogram = (int*)malloc(valorMaximo * sizeof(int));
     MPI_Reduce(histogram, global_histogram, valorMaximo, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
-    // Imprimir el histograma global en el proceso 0
+    // Imprie el histograma global en el proceso 0
     if (rank == 0) {
         printf("Histograma global:\n");
         for (int i = 0; i < valorMaximo; i++) {
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Liberar memoria
+    // Libera memoria
     free(data);
     free(local_data);
     free(histogram);
